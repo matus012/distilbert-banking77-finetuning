@@ -1,49 +1,103 @@
 PROJECT: Banking77 Transformer Fine-Tuning (ML Assignment 20)
 LAST UPDATED: 2026-04-30
 
-CURRENT PHASE: 1 (Setup) — DONE
-NEXT PHASE: 2 (Data pipeline)
+CURRENT PHASE: 4 (Evaluation) — DONE
+NEXT PHASE: 5 (Experiment sweep, runs 2-8)
 
 === PHASE STATUS ===
 [x] Phase 1: Setup (repo, venv, deps, GPU check)
-[ ] Phase 2: Data pipeline (load, tokenize Banking77, val split, class/length stats)
-[ ] Phase 3: Single training run (run 1 end-to-end)
-[ ] Phase 4: Evaluation module (confusion matrix, per-class F1)
+[x] Phase 2: Data pipeline (load, tokenize Banking77, val split, class/length stats)
+[x] Phase 3: Single training run (run 1 = distilbert_baseline)
+[x] Phase 4: Evaluation module (confusion matrix, per-class F1, classification report)
 [ ] Phase 5: Experiment sweep (runs 2-8)
 [ ] Phase 6: Analysis notebook (cross-run plots)
 [ ] Phase 7: Gradio app
 [ ] Phase 8: Documentation (README, defense prep)
 [ ] Phase 9: Final polish (clean repo, tag release)
 
-=== LAST COMPLETED (Phase 1) ===
-- Repo created at C:\Users\matus\A_MAIN\tuke01\rocnik2_ls\02_ml\assignment\ml_transformer\transformer_project
-  (NOTE: deviation from plan §4 path — actual location is under tuke01/, not personal/)
-- GitHub remote: https://github.com/matus012/transformer_project
-- Default branch: main
-- Directory skeleton complete (src/, experiments/, notebooks/, models/, data/, scripts/, archive/)
-- venv created (.venv\, Python 3.11)
-- Deps installed (torch 2.5.1+cu121 fallback — cu126 wheels for 2.5.1 don't exist)
-- GPU check passes: CUDA available, RTX 4060 Laptop, 8.59 GB VRAM
-- Files in place: .gitignore, LICENSE (MIT, Matus Filo), README stub, plan_transformer.md,
-  context.md, status.txt, src/__init__.py, scripts/gpu_check.py,
-  archive/debug_log.md, archive/decisions.md
-- First commit pushed to GitHub main (commit 847b64e)
+=== LAST COMPLETED ===
+
+Phase 1 (commit 847b64e + 17086ab):
+- Repo at C:\Users\matus\A_MAIN\tuke01\rocnik2_ls\02_ml\assignment\ml_transformer\transformer_project
+  (DEVIATION from plan §4: actual location is under tuke01/, not personal/)
+- GitHub: https://github.com/matus012/transformer_project (default branch: main)
+- venv with Python 3.11, torch 2.5.1+cu121 (cu126 wheels for 2.5.1 don't exist; cu121 is backward compat with CUDA 12.6 driver)
+- GPU verified: RTX 4060 Laptop, 8.59 GB VRAM
+
+Phase 2 (commit 7ee3b21 + 4e67d61):
+- src/data.py: DataConfig + load_banking77 + tokenize_dataset + get_label_names
+- src/utils.py: set_seed, get_device, setup_logger
+- Stratified 90/10 val split from train (seed=42), test untouched
+- Splits: Train 9002, Val 1001, Test 3080, 77 labels
+- Token stats: mean 16, p99 53, max 98 → max_length=128 has 0% truncation
+- Class imbalance: 5.25× (min 32, max 168)
+- trust_remote_code=True required for datasets 3.x
+
+Phase 3 (commit 22ea3b5 + a45e2c3):
+- pyproject.toml + pip install -e . (replaces PYTHONPATH workaround)
+- src/config.py: ExperimentConfig dataclass, baseline_config()
+- src/train.py: HF Trainer wrapper, freeze strategies (none/encoder/partial), CSV logging, loss/acc plots
+- distilbert_baseline run: val macro-F1 0.9035 @ epoch 3, wall-clock 113.5s
+- train_loss patched (was nan, fixed via state.log_history)
+- experiments/*/checkpoint-*/ added to .gitignore
+
+Phase 4 (commit 539b913):
+- src/evaluate.py: evaluate_run(run_dir, split) + CLI
+- distilbert_baseline test results: acc=0.9221, macro-F1=0.9219, weighted-F1=0.9219
+- Generalization gap: val 0.9035 → test 0.9219 (no gap, slight overperform)
+- Worst class F1 ≥ 0.81 (no broken intents)
+- Best 5 classes hit F1=1.0
+- Confusion matrix (77×77, annotated cells ≥5) + color-coded per-class F1 plot
 
 === BLOCKERS ===
 None.
 
 === NEXT ACTION ===
-Execute Phase 2 in CCLI:
-- Load Banking77 from HuggingFace (PolyAI/banking77)
-- Build tokenization pipeline (DistilBERT tokenizer, max_len=128)
-- Carve stratified 90/10 val split from train (seed=42)
-- Log class distribution + token length stats (median, p95, max)
-- Implement src/data.py + src/utils.py (seed, device, logging helpers)
+Generate Phase 5 coding plan (experiment sweep, runs 2-8):
+  2. distilbert_lr_low (LR=2e-5)
+  3. distilbert_lr_high (LR=1e-4)
+  4. distilbert_batch32 (batch=32)
+  5. distilbert_epochs5 (epochs=5)
+  6. distilbert_frozen_encoder (head-only)
+  7. distilbert_frozen_partial (freeze bottom 3 layers)
+  8. bert_baseline (BERT-base, OOM fallback ready: batch 8 + grad_accum 2)
+
+Each run: train via src/train.py + eval on test via src/evaluate.py.
+Add scripts/run_all_experiments.py to chain them.
+Wall-clock budget: ~2 min per DistilBERT run × 6 = 12 min, BERT run ~5 min → ~20 min total GPU time.
+
+=== KEY FILES (existing) ===
+Source:
+- src/utils.py, src/data.py, src/config.py, src/train.py, src/evaluate.py
+- src/__init__.py
+- pyproject.toml, requirements.txt
+- scripts/gpu_check.py, scripts/data_stats.py, scripts/smoke_test_data.py
+
+Docs:
+- plan_transformer.md (frozen plan)
+- context.md (copy of plan)
+- status.txt (this file)
+- archive/decisions.md (12 entries)
+- archive/debug_log.md (1 entry: trust_remote_code fix)
+
+Experiment artifacts (distilbert_baseline only so far):
+- experiments/distilbert_baseline/config.json
+- experiments/distilbert_baseline/git_commit.txt
+- experiments/distilbert_baseline/metrics.csv
+- experiments/distilbert_baseline/training_log.txt
+- experiments/distilbert_baseline/test_metrics.json
+- experiments/distilbert_baseline/classification_report.txt
+- experiments/distilbert_baseline/plots/loss_curve.png
+- experiments/distilbert_baseline/plots/accuracy_curve.png
+- experiments/distilbert_baseline/plots/confusion_matrix.png
+- experiments/distilbert_baseline/plots/per_class_f1.png
+- experiments/distilbert_baseline/best_model/ (gitignored)
 
 === NOTES ===
 - Project root: C:\Users\matus\A_MAIN\tuke01\rocnik2_ls\02_ml\assignment\ml_transformer\transformer_project
+- Coding plan dir (outside repo): C:\Users\matus\A_MAIN\tuke01\rocnik2_ls\02_ml\assignment\ml_transformer\
 - Hardware: RTX 4060 Laptop 8GB VRAM, i7-13650HX, 16GB RAM
-- All work local (no HPC)
+- All training on GPU + fp16 (CPU fallback would take 1-2h per run, current is ~2min)
+- CCLI Sonnet executes coding; this CChat (plan-keeper) reviews + generates plans
 - Approval gate between every phase
-- CCLI executes coding; plan-keeper CChat reviews against plan
-- torch is cu121 build (works fine on CUDA 12.6 driver — backward compat)
+- Commit baseline: 539b913 on main, pushed to GitHub
