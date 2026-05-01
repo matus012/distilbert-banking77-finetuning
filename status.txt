@@ -1,15 +1,15 @@
 PROJECT: Banking77 Transformer Fine-Tuning (ML Assignment 20)
-LAST UPDATED: 2026-04-30
+LAST UPDATED: 2026-05-01
 
-CURRENT PHASE: 4 (Evaluation) — DONE
-NEXT PHASE: 5 (Experiment sweep, runs 2-8)
+CURRENT PHASE: 5 (Experiment sweep, runs 2-8) — DONE
+NEXT PHASE: 6 (Analysis notebook, cross-run plots)
 
 === PHASE STATUS ===
 [x] Phase 1: Setup (repo, venv, deps, GPU check)
 [x] Phase 2: Data pipeline (load, tokenize Banking77, val split, class/length stats)
 [x] Phase 3: Single training run (run 1 = distilbert_baseline)
 [x] Phase 4: Evaluation module (confusion matrix, per-class F1, classification report)
-[ ] Phase 5: Experiment sweep (runs 2-8)
+[x] Phase 5: Experiment sweep (runs 2-8)
 [ ] Phase 6: Analysis notebook (cross-run plots)
 [ ] Phase 7: Gradio app
 [ ] Phase 8: Documentation (README, defense prep)
@@ -49,22 +49,20 @@ Phase 4 (commit 539b913):
 - Best 5 classes hit F1=1.0
 - Confusion matrix (77×77, annotated cells ≥5) + color-coded per-class F1 plot
 
+Phase 5 (commits 3b3ff91 + 2c0bfa5):
+- src/config.py: 7 new factories + ALL_CONFIGS registry
+- scripts/run_all_experiments.py: sequential sweep runner with OOM handling
+- All 7 runs completed (no BERT OOM, ran at batch=16 fp16 fine)
+- Results: distilbert_lr_low 0.8393, distilbert_lr_high 0.9273, distilbert_batch32 0.8934,
+  distilbert_epochs5 0.9307, distilbert_frozen_encoder 0.1200, distilbert_frozen_partial 0.9049,
+  bert_baseline 0.9289 (best test macro-F1 overall)
+- frozen_encoder low F1 (0.12) is expected (head-only training on 77 classes)
+
 === BLOCKERS ===
 None.
 
 === NEXT ACTION ===
-Generate Phase 5 coding plan (experiment sweep, runs 2-8):
-  2. distilbert_lr_low (LR=2e-5)
-  3. distilbert_lr_high (LR=1e-4)
-  4. distilbert_batch32 (batch=32)
-  5. distilbert_epochs5 (epochs=5)
-  6. distilbert_frozen_encoder (head-only)
-  7. distilbert_frozen_partial (freeze bottom 3 layers)
-  8. bert_baseline (BERT-base, OOM fallback ready: batch 8 + grad_accum 2)
-
-Each run: train via src/train.py + eval on test via src/evaluate.py.
-Add scripts/run_all_experiments.py to chain them.
-Wall-clock budget: ~2 min per DistilBERT run × 6 = 12 min, BERT run ~5 min → ~20 min total GPU time.
+Generate Phase 6 coding plan (analysis notebook: cross-run plots, comparison table).
 
 === KEY FILES (existing) ===
 Source:
