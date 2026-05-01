@@ -17,3 +17,4 @@ Append-only. Format: YYYY-MM-DD | decision | rationale
 2026-05-01 | aggregated artifacts in experiments/_summary/ | co-located with per-run experiment dirs for discoverability; not gitignored (unlike checkpoint-* dirs) since these are final deliverables
 2026-05-01 | Gradio demo uses distilbert_epochs5 as demo model | best test macro-F1 (0.9307) across all 8 runs at 188s wall-clock; BERT-base achieves 0.9289 but costs 2× the training time
 2026-05-01 | module-level model load in src/app.py (not per-request) | one-time ~1.5s GPU startup cost; avoids re-loading 250MB weights on every Gradio request (~4ms after warm-up)
+2026-05-01 | README + REPORT split | README = GitHub entry point (setup/reproduce/demo, <=150 lines); REPORT.md = full academic doc with 9 sections + 4 appendices, designed for manual LaTeX conversion by user
