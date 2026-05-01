@@ -1,0 +1,10 @@
+| run_name                  | model_name              |   learning_rate |   batch_size |   num_epochs | freeze_strategy   |   val_macro_f1 |   test_acc |   test_macro_f1 |   test_weighted_f1 |   wall_clock_seconds |
+|:--------------------------|:------------------------|----------------:|-------------:|-------------:|:------------------|---------------:|-----------:|----------------:|-------------------:|---------------------:|
+| distilbert_epochs5        | distilbert-base-uncased |          0.0001 |           16 |            5 | none              |         0.9114 |     0.9305 |          0.9307 |             0.9307 |             187.9000 |
+| bert_baseline             | bert-base-uncased       |          0.0001 |           16 |            3 | none              |         0.9182 |     0.9289 |          0.9289 |             0.9289 |             197.2000 |
+| distilbert_lr_high        | distilbert-base-uncased |          0.0001 |           16 |            3 | none              |         0.9175 |     0.9273 |          0.9273 |             0.9273 |             113.1000 |
+| distilbert_baseline       | distilbert-base-uncased |          0.0001 |           16 |            3 | none              |         0.9035 |     0.9221 |          0.9219 |             0.9219 |             113.5000 |
+| distilbert_frozen_partial | distilbert-base-uncased |          0.0001 |           16 |            3 | partial           |         0.8945 |     0.9052 |          0.9049 |             0.9049 |              59.1000 |
+| distilbert_batch32        | distilbert-base-uncased |          0.0001 |           32 |            3 | none              |         0.8817 |     0.8977 |          0.8934 |             0.8934 |              83.9000 |
+| distilbert_lr_low         | distilbert-base-uncased |          0.0000 |           16 |            3 | none              |         0.8369 |     0.8477 |          0.8393 |             0.8393 |             113.6000 |
+| distilbert_frozen_encoder | distilbert-base-uncased |          0.0001 |           16 |            3 | encoder           |         0.1328 |     0.1620 |          0.1200 |             0.1200 |              27.9000 |

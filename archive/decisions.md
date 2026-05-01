@@ -13,3 +13,5 @@ Append-only. Format: YYYY-MM-DD | decision | rationale
 2026-04-30 | evaluate_run takes run_dir not config | enables eval of any saved run without re-instantiating training config
 2026-05-01 | partial_freeze_layers=3 for distilbert_frozen_partial | DistilBERT has 6 transformer layers; "bottom 3" = layer[0:3] (0-indexed). Embeddings also frozen. Convention: layer indices follow HF model.distilbert.transformer.layer ordering.
 2026-05-01 | BERT OOM fallback: batch=16 → batch=8+grad_accum=2 → batch=4+grad_accum=4 | RTX 4060 8GB may OOM on BERT-base with fp16 batch=16; effective batch kept at 16 across fallbacks
+2026-05-01 | analysis logic in src/analysis.py + thin notebook cells | keeps notebook testable and defense-readable; logic in module avoids hiding state in cell execution order
+2026-05-01 | aggregated artifacts in experiments/_summary/ | co-located with per-run experiment dirs for discoverability; not gitignored (unlike checkpoint-* dirs) since these are final deliverables

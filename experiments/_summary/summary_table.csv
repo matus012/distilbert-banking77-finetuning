@@ -1,0 +1,9 @@
+run_name,model_name,learning_rate,batch_size,num_epochs,freeze_strategy,val_macro_f1,test_acc,test_macro_f1,test_weighted_f1,wall_clock_seconds
+distilbert_epochs5,distilbert-base-uncased,5e-05,16,5,none,0.911403,0.930519,0.930663,0.930663,187.9
+bert_baseline,bert-base-uncased,5e-05,16,3,none,0.918242,0.928896,0.928872,0.928872,197.2
+distilbert_lr_high,distilbert-base-uncased,0.0001,16,3,none,0.917508,0.927273,0.927301,0.927301,113.1
+distilbert_baseline,distilbert-base-uncased,5e-05,16,3,none,0.903465,0.922078,0.921943,0.921943,113.5
+distilbert_frozen_partial,distilbert-base-uncased,5e-05,16,3,partial,0.894548,0.905195,0.904863,0.904863,59.1
+distilbert_batch32,distilbert-base-uncased,5e-05,32,3,none,0.881671,0.897727,0.893416,0.893416,83.9
+distilbert_lr_low,distilbert-base-uncased,2e-05,16,3,none,0.836904,0.847727,0.839261,0.839261,113.6
+distilbert_frozen_encoder,distilbert-base-uncased,5e-05,16,3,encoder,0.132793,0.162013,0.120003,0.120003,27.9

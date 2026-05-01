@@ -11,3 +11,4 @@ gradio==5.7.1
 pandas==2.2.3
 numpy==1.26.4
 jupyter==1.1.1
+tabulate==0.10.0
