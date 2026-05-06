@@ -124,4 +124,4 @@ RTX 4060 Laptop 8GB VRAM, i7-13650HX, 16GB RAM. All training uses fp16. Total GP
 
 ## License
 
-MIT
+[MIT](LICENSE)
