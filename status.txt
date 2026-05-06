@@ -1,8 +1,9 @@
 PROJECT: Banking77 Transformer Fine-Tuning (ML Assignment 20)
 LAST UPDATED: 2026-05-06
+STATUS: SHIPPED (v1.0.1)
 
 CURRENT PHASE: 9 (Final polish) — DONE
-NEXT PHASE: None (shipped)
+NEXT PHASE: None (project complete, hand-in ready)
 
 === PHASE STATUS ===
 [x] Phase 1: Setup (repo, venv, deps, GPU check)
@@ -13,7 +14,7 @@ NEXT PHASE: None (shipped)
 [x] Phase 6: Analysis notebook (cross-run plots)
 [x] Phase 7: Gradio app
 [x] Phase 8: Documentation (README, REPORT.md)
-[x] Phase 9: Final polish (run_app.bat, README polish, v1.0.0 tag)
+[x] Phase 9: Final polish (run_app.bat, README polish, v1.0.0 + v1.0.1 tags)
 
 === LAST COMPLETED ===
 
@@ -23,6 +24,7 @@ Phase 1 (commit 847b64e + 17086ab):
 - GitHub: https://github.com/matus012/transformer_project (default branch: main)
 - venv with Python 3.11, torch 2.5.1+cu121 (cu126 wheels for 2.5.1 don't exist; cu121 is backward compat with CUDA 12.6 driver)
 - GPU verified: RTX 4060 Laptop, 8.59 GB VRAM
+- LICENSE (MIT, "Matus Filo") added in this phase
 
 Phase 2 (commit 7ee3b21 + 4e67d61):
 - src/data.py: DataConfig + load_banking77 + tokenize_dataset + get_label_names
@@ -85,16 +87,22 @@ Phase 8 (commit 59225f3):
 - LaTeX-conversion-friendly markdown (ATX headers, pipe tables, fenced code, no HTML)
 - All numbers traceable to experiments/_summary/summary_table.csv
 
+Phase 9 (commits 64371c9 + 76a815d):
+- run_app.bat at repo root (Windows one-click launcher)
+- README quick start polished, [MIT](LICENSE) link restored
+- requirements.txt: added --extra-index-url for PyTorch CUDA wheels
+  (caught by fresh-clone smoke test — torch==2.5.1+cu121 not on standard PyPI)
+- Tags pushed: v1.0.0 (initial release) + v1.0.1 (requirements fix)
+- Fresh clone smoke test passed end-to-end:
+  pip install -r requirements.txt OK, pip install -e . OK, torch.cuda.is_available() True
+- Release: https://github.com/matus012/transformer_project/releases/tag/v1.0.1
+
 === BLOCKERS ===
-None.
+None. Project shipped.
 
 === NEXT ACTION ===
-Generate Phase 9 coding plan (final polish):
-- Clean working tree, verify no stale files
-- Verify all artifacts committed
-- Create CHANGELOG or release notes
-- Tag v1.0 (annotated tag)
-- Final push to GitHub including tag
+None. Submit GitHub URL to teacher.
+Optional: prepare for verbal defense using REPORT.md Appendix D (Q&A).
 
 === KEY FILES ===
 Source:
@@ -104,18 +112,20 @@ Source:
 - pyproject.toml, requirements.txt
 - scripts/gpu_check.py, scripts/data_stats.py, scripts/smoke_test_data.py
 - scripts/run_all_experiments.py
+- run_app.bat (one-click demo launcher)
 
 Notebooks:
 - notebooks/analysis.ipynb
 
 Docs:
-- README.md (107 lines)
+- README.md
 - REPORT.md (508 lines, ready for LaTeX conversion)
+- LICENSE (MIT, Matus Filo)
 - plan_transformer.md (frozen plan)
 - context.md (copy of plan)
 - status.txt (this file)
 - archive/decisions.md (~18 entries)
-- archive/debug_log.md (1 entry: trust_remote_code fix)
+- archive/debug_log.md
 
 Experiment artifacts (8 runs, all complete):
 - experiments/distilbert_baseline/ (run 1)
@@ -140,11 +150,10 @@ Best model: distilbert_epochs5
 
 === NOTES ===
 - Project root: C:\Users\matus\A_MAIN\tuke01\rocnik2_ls\02_ml\assignment\ml_transformer\transformer_project
-- Coding plan dir (outside repo): C:\Users\matus\A_MAIN\tuke01\rocnik2_ls\02_ml\assignment\ml_transformer\
 - Hardware: RTX 4060 Laptop 8GB VRAM, i7-13650HX, 16GB RAM
 - All training on GPU + fp16
-- CCLI Sonnet executes coding; CChat (plan-keeper) reviews + generates plans
-- Approval gate between every phase
-- Last commit on main: 59225f3 (Phase 8 docs)
-- Total commits this project: ~15
+- CCLI Sonnet executed coding; CChat (plan-keeper) reviewed + generated plans
+- Last commit on main: 76a815d (Phase 9 requirements.txt fix)
+- Tags: v1.0.0, v1.0.1 (latest)
 - Total GPU time across all 8 runs: ~17 min
+- Defense format: free-hand verbal, no slides required
