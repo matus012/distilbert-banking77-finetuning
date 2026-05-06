@@ -21,7 +21,7 @@ NEXT PHASE: None (project complete, hand-in ready)
 Phase 1 (commit 847b64e + 17086ab):
 - Repo at C:\Users\matus\A_MAIN\tuke01\rocnik2_ls\02_ml\assignment\ml_transformer\transformer_project
   (DEVIATION from plan §4: actual location is under tuke01/, not personal/)
-- GitHub: https://github.com/matus012/transformer_project (default branch: main)
+- GitHub: https://github.com/matus012/distilbert-banking77-finetuning (default branch: main)
 - venv with Python 3.11, torch 2.5.1+cu121 (cu126 wheels for 2.5.1 don't exist; cu121 is backward compat with CUDA 12.6 driver)
 - GPU verified: RTX 4060 Laptop, 8.59 GB VRAM
 - LICENSE (MIT, "Matus Filo") added in this phase
