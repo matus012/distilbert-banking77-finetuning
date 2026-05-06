@@ -1,8 +1,8 @@
 PROJECT: Banking77 Transformer Fine-Tuning (ML Assignment 20)
-LAST UPDATED: 2026-05-01
+LAST UPDATED: 2026-05-06
 
-CURRENT PHASE: 5 (Experiment sweep, runs 2-8) — DONE
-NEXT PHASE: 6 (Analysis notebook, cross-run plots)
+CURRENT PHASE: 9 (Final polish) — DONE
+NEXT PHASE: None (shipped)
 
 === PHASE STATUS ===
 [x] Phase 1: Setup (repo, venv, deps, GPU check)
@@ -10,10 +10,10 @@ NEXT PHASE: 6 (Analysis notebook, cross-run plots)
 [x] Phase 3: Single training run (run 1 = distilbert_baseline)
 [x] Phase 4: Evaluation module (confusion matrix, per-class F1, classification report)
 [x] Phase 5: Experiment sweep (runs 2-8)
-[ ] Phase 6: Analysis notebook (cross-run plots)
-[ ] Phase 7: Gradio app
-[ ] Phase 8: Documentation (README, defense prep)
-[ ] Phase 9: Final polish (clean repo, tag release)
+[x] Phase 6: Analysis notebook (cross-run plots)
+[x] Phase 7: Gradio app
+[x] Phase 8: Documentation (README, REPORT.md)
+[x] Phase 9: Final polish (run_app.bat, README polish, v1.0.0 tag)
 
 === LAST COMPLETED ===
 
@@ -49,53 +49,102 @@ Phase 4 (commit 539b913):
 - Best 5 classes hit F1=1.0
 - Confusion matrix (77×77, annotated cells ≥5) + color-coded per-class F1 plot
 
-Phase 5 (commits 3b3ff91 + 2c0bfa5):
+Phase 5 (commits 3b3ff91 + 2c0bfa5 + 8292851):
 - src/config.py: 7 new factories + ALL_CONFIGS registry
 - scripts/run_all_experiments.py: sequential sweep runner with OOM handling
 - All 7 runs completed (no BERT OOM, ran at batch=16 fp16 fine)
-- Results: distilbert_lr_low 0.8393, distilbert_lr_high 0.9273, distilbert_batch32 0.8934,
-  distilbert_epochs5 0.9307, distilbert_frozen_encoder 0.1200, distilbert_frozen_partial 0.9049,
-  bert_baseline 0.9289 (best test macro-F1 overall)
-- frozen_encoder low F1 (0.12) is expected (head-only training on 77 classes)
+- Results (test macro-F1):
+  distilbert_lr_low 0.8393, distilbert_lr_high 0.9273, distilbert_batch32 0.8934,
+  distilbert_epochs5 0.9307 (BEST), distilbert_frozen_encoder 0.1200,
+  distilbert_frozen_partial 0.9049, bert_baseline 0.9289
+- Wall-clock totals: DistilBERT runs 73-199s, BERT 197s
+- frozen_encoder collapse expected (head-only on 768→77)
+
+Phase 6 (commit 7689823):
+- src/analysis.py: load_all_runs, load_training_curves, load_per_class_f1
+- notebooks/analysis.ipynb: 11 sections, runs top-to-bottom via nbconvert
+- experiments/_summary/: summary_table.csv + .md + 9 cross-run plots
+- requirements.txt: tabulate==0.10.0 added (pandas to_markdown dep)
+- Plots: test_accuracy_bar, test_macro_f1_bar, val_loss_overlay, val_macro_f1_overlay,
+  time_vs_f1, lr_sweep, freeze_sweep, arch_comparison, per_class_comparison
+
+Phase 7 (commit 479f79d):
+- src/app.py: Gradio demo loading distilbert_epochs5 (best run, test macro-F1 0.9307)
+- Module-level model load (~1.5s GPU startup, ~4ms warm inference)
+- localhost:7860, share=False, top-1 + top-3 confidence display
+- Smoke tests pass:
+  "I lost my card" → lost_or_stolen_card (0.9885)
+  "exchange rate today" → exchange_rate (0.9953)
+  empty input → graceful "(empty input)"
+- id2label fallback to get_label_names() (saved model has default LABEL_0..LABEL_76)
+
+Phase 8 (commit 59225f3):
+- README.md: 107 lines, setup/reproduce/demo instructions, 1 plot embed
+- REPORT.md: 508 lines, 9 sections + 4 appendices, all 9 cross-run plots embedded
+- Defense Q&A (11 questions) in Appendix D with real numbers
+- LaTeX-conversion-friendly markdown (ATX headers, pipe tables, fenced code, no HTML)
+- All numbers traceable to experiments/_summary/summary_table.csv
 
 === BLOCKERS ===
 None.
 
 === NEXT ACTION ===
-Generate Phase 6 coding plan (analysis notebook: cross-run plots, comparison table).
+Generate Phase 9 coding plan (final polish):
+- Clean working tree, verify no stale files
+- Verify all artifacts committed
+- Create CHANGELOG or release notes
+- Tag v1.0 (annotated tag)
+- Final push to GitHub including tag
 
-=== KEY FILES (existing) ===
+=== KEY FILES ===
 Source:
 - src/utils.py, src/data.py, src/config.py, src/train.py, src/evaluate.py
+- src/analysis.py, src/app.py
 - src/__init__.py
 - pyproject.toml, requirements.txt
 - scripts/gpu_check.py, scripts/data_stats.py, scripts/smoke_test_data.py
+- scripts/run_all_experiments.py
+
+Notebooks:
+- notebooks/analysis.ipynb
 
 Docs:
+- README.md (107 lines)
+- REPORT.md (508 lines, ready for LaTeX conversion)
 - plan_transformer.md (frozen plan)
 - context.md (copy of plan)
 - status.txt (this file)
-- archive/decisions.md (12 entries)
+- archive/decisions.md (~18 entries)
 - archive/debug_log.md (1 entry: trust_remote_code fix)
 
-Experiment artifacts (distilbert_baseline only so far):
-- experiments/distilbert_baseline/config.json
-- experiments/distilbert_baseline/git_commit.txt
-- experiments/distilbert_baseline/metrics.csv
-- experiments/distilbert_baseline/training_log.txt
-- experiments/distilbert_baseline/test_metrics.json
-- experiments/distilbert_baseline/classification_report.txt
-- experiments/distilbert_baseline/plots/loss_curve.png
-- experiments/distilbert_baseline/plots/accuracy_curve.png
-- experiments/distilbert_baseline/plots/confusion_matrix.png
-- experiments/distilbert_baseline/plots/per_class_f1.png
-- experiments/distilbert_baseline/best_model/ (gitignored)
+Experiment artifacts (8 runs, all complete):
+- experiments/distilbert_baseline/ (run 1)
+- experiments/distilbert_lr_low/ (run 2)
+- experiments/distilbert_lr_high/ (run 3)
+- experiments/distilbert_batch32/ (run 4)
+- experiments/distilbert_epochs5/ (run 5, BEST)
+- experiments/distilbert_frozen_encoder/ (run 6)
+- experiments/distilbert_frozen_partial/ (run 7)
+- experiments/bert_baseline/ (run 8)
+- experiments/_summary/ (cross-run plots + summary table)
+
+Each run dir has: config.json, git_commit.txt, metrics.csv, training_log.txt,
+test_metrics.json, classification_report.txt, plots/, best_model/ (gitignored)
+
+=== HEADLINE RESULT ===
+Best model: distilbert_epochs5
+- Test macro-F1: 0.9307
+- Test accuracy: 0.9305
+- Wall-clock: 188s on RTX 4060 + fp16
+- Beats BERT-base (0.9289) at half the training cost
 
 === NOTES ===
 - Project root: C:\Users\matus\A_MAIN\tuke01\rocnik2_ls\02_ml\assignment\ml_transformer\transformer_project
 - Coding plan dir (outside repo): C:\Users\matus\A_MAIN\tuke01\rocnik2_ls\02_ml\assignment\ml_transformer\
 - Hardware: RTX 4060 Laptop 8GB VRAM, i7-13650HX, 16GB RAM
-- All training on GPU + fp16 (CPU fallback would take 1-2h per run, current is ~2min)
-- CCLI Sonnet executes coding; this CChat (plan-keeper) reviews + generates plans
+- All training on GPU + fp16
+- CCLI Sonnet executes coding; CChat (plan-keeper) reviews + generates plans
 - Approval gate between every phase
-- Commit baseline: 539b913 on main, pushed to GitHub
+- Last commit on main: 59225f3 (Phase 8 docs)
+- Total commits this project: ~15
+- Total GPU time across all 8 runs: ~17 min

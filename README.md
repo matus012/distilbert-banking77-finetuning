@@ -1,6 +1,6 @@
 # Banking77 Intent Classification: Fine-Tuning DistilBERT and BERT for 77-Class Banking Query Classification
 
-![Python](https://img.shields.io/badge/Python-3.11-blue) ![PyTorch](https://img.shields.io/badge/PyTorch-2.5-orange) ![License](https://img.shields.io/badge/License-MIT-green)
+![Python](https://img.shields.io/badge/Python-3.11-blue) ![PyTorch](https://img.shields.io/badge/PyTorch-2.5-orange)
 
 TUKE FEI, BSc Intelligent Systems Y2, ML Course Assignment 20 (Zadanie 20 — Ladenie Transformer).
 
@@ -45,11 +45,12 @@ transformer_project/
 │   └── debug_log.md       # Issue log
 ├── context.md             # Project plan (static)
 ├── status.txt             # Current phase + per-phase summary
+├── run_app.bat            # Windows one-click launcher
 ├── requirements.txt
 └── pyproject.toml
 ```
 
-## Setup
+## Quick Start
 
 ```bash
 git clone https://github.com/matus012/transformer_project.git
@@ -57,9 +58,22 @@ cd transformer_project
 python -m venv .venv
 .venv\Scripts\activate          # Windows
 # source .venv/bin/activate     # Linux/macOS
-pip install -e .
 pip install -r requirements.txt
+pip install -e .
 ```
+
+> **Note:** `experiments/*/best_model/` is gitignored — model weights are not included in the repo.
+> You must train before running the demo. Two options:
+>
+> **Option A — Single best run** (~188s on RTX 4060 + fp16):
+> ```bash
+> python scripts/run_all_experiments.py --only distilbert_epochs5
+> ```
+>
+> **Option B — Full 8-run sweep** (~17 min on RTX 4060 + fp16):
+> ```bash
+> python scripts/run_all_experiments.py
+> ```
 
 ## Reproduce Experiments
 
@@ -90,8 +104,14 @@ jupyter notebook notebooks/analysis.ipynb
 
 ## Run the Demo
 
-> **Note:** `experiments/*/best_model/` is gitignored. Train `distilbert_epochs5` first (see above), then:
+After training `distilbert_epochs5` (see Quick Start above):
 
+**Windows (one-click):**
+```
+run_app.bat
+```
+
+**Manual:**
 ```bash
 python src/app.py
 ```
@@ -104,4 +124,4 @@ RTX 4060 Laptop 8GB VRAM, i7-13650HX, 16GB RAM. All training uses fp16. Total GP
 
 ## License
 
-[MIT](LICENSE)
+MIT
